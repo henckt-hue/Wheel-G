@@ -405,47 +405,37 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
           <span class="gs-title">Google Sheets Koppeling</span>
         </div>
         <div class="gs-desc">
-          Sync je trades naar een <strong>Google Sheet</strong> via een Apps Script Web App.
-          Alleen jij hebt toegang — jij beheert het script zelf.
+          Sync je trades rechtstreeks naar Google Sheets via de Sheets API.
+          Eenmalig een API key instellen — verloopt nooit.
         </div>
       </div>
 
       <div class="status-pill warn" id="gs-status-pill">⚠️ Nog niet gekoppeld aan Google Sheets</div>
 
-      <div class="sec-title">Setup in 3 stappen</div>
+      <div class="sec-title">Setup in 2 stappen</div>
       <div class="steps-card">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-text">
-            Maak een nieuw Google Sheet aan en ga naar <strong>Extensies → Apps Script</strong>.
-            Vervang de inhoud door het script dat je via de knop hieronder kopieert.
+            Ga naar <a href="https://console.cloud.google.com/apis/credentials" target="_blank"><strong>console.cloud.google.com/apis/credentials</strong></a>
+            → kopieer je <strong>API key</strong> en plak hieronder.
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-text">
-            Klik in Apps Script op <strong>Implementeren → Nieuwe implementatie</strong>.<br>
-            Kies type: <strong>Web-app</strong> → Uitvoeren als: <strong>Ik</strong> → Toegang: <strong>Iedereen</strong> → klik <strong>Implementeren</strong>.
+            Zorg dat je Google Sheet <strong>"Trades"</strong> gedeeld is op
+            <strong>"Iedereen met de link kan bewerken"</strong> via de Share knop.
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-text">
-            Kopieer de <strong>Web app URL</strong> (eindigt op <code>/exec</code>) en plak hieronder.
-          </div>
-        </div>
-      </div>
-
-      <div class="btn-row" style="margin-bottom:0.65rem">
-        <button class="btn btn-gsheets" onclick="copyGASScript()">📋 Kopieer Apps Script Code</button>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Google Apps Script Web App URL *</label>
-        <input class="form-input token-input" id="gs-url" type="url"
-          placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+        <label class="form-label">Google Sheets API Key *</label>
+        <input class="form-input token-input" id="gs-url" type="password"
+          placeholder="AIzaSy…" autocomplete="off">
         <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;">
-          🔒 URL wordt alleen lokaal opgeslagen — nooit verstuurd naar derden
+          🔒 Key wordt alleen lokaal opgeslagen in jouw browser
         </div>
       </div>
 
@@ -1221,18 +1211,24 @@ function parseExcelRows(rows) {
 }
 
 // ============================================================
+// GOOGLE SHEETS DIRECT API
 // ============================================================
-let gsCfg = { url: '' };
+const GS_SPREADSHEET_ID = '12ySqhH1ZyD5L5mS-Rg24DGzRpWIWh5_Rsj0iRP8iqaY';
+const GS_SHEET_NAME = 'Trades';
+const GS_BASE = 'https://sheets.googleapis.com/v4/spreadsheets';
+
+let gsCfg = { apiKey: '' };
 let gsConnected = false;
 
 function loadGSCfg() {
   try {
-    const s = localStorage.getItem('wt_cfg_gs');
+    const s = localStorage.getItem('wt_cfg_gs2');
     if (s) {
       gsCfg = { ...gsCfg, ...JSON.parse(s) };
-      if (gsCfg.url) {
-        document.getElementById('gs-url').value = gsCfg.url;
+      if (gsCfg.apiKey) {
+        document.getElementById('gs-url').value = gsCfg.apiKey;
         gsConnected = true;
+        setSyncUI('connected');
         updateGSStatusPill();
       }
     }
@@ -1240,22 +1236,22 @@ function loadGSCfg() {
 }
 
 function saveGSConfig() {
-  const url = document.getElementById('gs-url').value.trim();
-  if (!url || !url.startsWith('https://script.google.com')) {
-    showToast('Voer een geldige Apps Script URL in', 'err'); return;
-  }
-  gsCfg = { url };
-  localStorage.setItem('wt_cfg_gs', JSON.stringify(gsCfg));
+  const apiKey = document.getElementById('gs-url').value.trim();
+  if (!apiKey) { showToast('Voer een API key in', 'err'); return; }
+  gsCfg = { apiKey };
+  localStorage.setItem('wt_cfg_gs2', JSON.stringify(gsCfg));
   gsConnected = true;
+  setSyncUI('connected');
   updateGSStatusPill();
-  showToast('✅ Google Sheets config opgeslagen', 'ok');
+  showToast('✅ API key opgeslagen', 'ok');
 }
 
 function disconnectGS() {
   if (!confirm('Google Sheets koppeling verwijderen?')) return;
-  gsCfg = { url: '' };
-  localStorage.removeItem('wt_cfg_gs');
+  gsCfg = { apiKey: '' };
+  localStorage.removeItem('wt_cfg_gs2');
   gsConnected = false;
+  setSyncUI('disconnected');
   updateGSStatusPill();
   showToast('Ontkoppeld van Google Sheets', 'warn');
 }
@@ -1272,9 +1268,9 @@ function updateGSStatusPill() {
   }
 }
 
-// Push trades to Google Sheets via Apps Script
+// Push trades to Google Sheets via direct API
 async function pushToGoogleSheets() {
-  if (!gsConnected || !gsCfg.url) return;
+  if (!gsConnected || !gsCfg.apiKey) return;
   setSyncUI('syncing');
   try {
     const headers = ['Open','Close','Ticker','Type','Expiry','Strike','Contracts',
@@ -1286,49 +1282,69 @@ async function pushToGoogleSheets() {
       t.netPremium, t.status, t.breakeven||'',
       t.account||'', t.currency||'USD', t.notes||''
     ]);
-    const payload = { action: 'write', headers, rows };
-    // no-cors avoids preflight — response is opaque but write succeeds
-    await fetch(gsCfg.url, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
+    const values = [headers, ...rows];
+    const range = `${GS_SHEET_NAME}!A1`;
+    // First clear the sheet
+    await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(GS_SHEET_NAME)}:clear?key=${gsCfg.apiKey}`, {
+      method: 'POST'
     });
-    setSyncUI(gsConnected ? 'connected' : 'disconnected');
-    showToast('✅ Trades opgeslagen in Google Sheets', 'ok');
+    // Then write new data
+    const resp = await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW&key=${gsCfg.apiKey}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ range, majorDimension: 'ROWS', values })
+    });
+    if (!resp.ok) {
+      const e = await resp.json();
+      throw new Error(e.error?.message || 'HTTP ' + resp.status);
+    }
+    setSyncUI('connected');
+    showToast('✅ ' + trades.length + ' trades opgeslagen in Google Sheets', 'ok');
   } catch(e) {
     console.error(e);
-    setSyncUI(gsConnected ? 'connected' : 'disconnected');
-    showToast('❌ Google Sheets push mislukt: ' + e.message, 'err');
+    setSyncUI('connected');
+    showToast('❌ Push mislukt: ' + e.message, 'err');
   }
 }
 
-// Pull trades from Google Sheets via Apps Script
+// Pull trades from Google Sheets via direct API
 async function syncFromGoogleSheets() {
-  if (!gsConnected || !gsCfg.url) {
-    showToast('Configureer eerst Google Sheets in ⚙️ Instellingen', 'warn'); return;
+  if (!gsConnected || !gsCfg.apiKey) {
+    showToast('Voer eerst een API key in via ⚙️ Instellingen', 'warn'); return;
   }
   setSyncUI('syncing');
   try {
-    const resp = await fetch(gsCfg.url + '?action=read');
-    const text = await resp.text();
-    // GAS soms stuurt HTML redirect pagina — probeer JSON te parsen
-    let data;
-    try { data = JSON.parse(text); }
-    catch(e) { throw new Error('Ongeldig antwoord van Apps Script. Controleer of de deployment correct is (Toegang: Iedereen).'); }
-    if (data.status !== 'ok') throw new Error(data.message || 'Onbekende fout');
-    const imported = parseGSRows(data.rows);
+    const range = `${GS_SHEET_NAME}!A:P`;
+    const resp = await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}?key=${gsCfg.apiKey}`);
+    if (!resp.ok) {
+      const e = await resp.json();
+      throw new Error(e.error?.message || 'HTTP ' + resp.status);
+    }
+    const data = await resp.json();
+    const rows = data.values || [];
+    if (rows.length < 2) throw new Error('Geen trades gevonden — importeer eerst je Excel');
+    const imported = parseGSRows(rows);
     if (imported.length === 0) throw new Error('Geen trades gevonden — importeer eerst je Excel');
     trades = imported;
     saveLocal();
     renderAll();
-    setSyncUI(gsConnected ? 'connected' : 'disconnected');
+    setSyncUI('connected');
     showToast('✅ ' + imported.length + ' trades geladen uit Google Sheets', 'ok');
   } catch(e) {
     console.error(e);
-    setSyncUI(gsConnected ? 'connected' : 'disconnected');
+    setSyncUI('connected');
     showToast('❌ ' + e.message, 'err');
   }
+}
+
+async function testAndSyncGS() {
+  const apiKey = document.getElementById('gs-url').value.trim();
+  if (!apiKey) { showToast('Voer eerst een API key in', 'err'); return; }
+  gsCfg = { apiKey };
+  gsConnected = true;
+  await syncFromGoogleSheets();
+  localStorage.setItem('wt_cfg_gs2', JSON.stringify(gsCfg));
+  updateGSStatusPill();
 }
 
 async function testAndSyncGS() {
@@ -1341,109 +1357,6 @@ async function testAndSyncGS() {
     localStorage.setItem('wt_cfg_gs', JSON.stringify(gsCfg));
     updateGSStatusPill();
   }
-}
-
-// Parse rows from Google Sheets (same column order as headers above)
-function parseGSRows(rows) {
-  if (!rows || rows.length < 2) return [];
-  const out = [];
-  for (let i = 1; i < rows.length; i++) {
-    const r = rows[i];
-    if (!r[2] || String(r[2]).trim() === '') continue;
-    const pn = v => { if (!v && v !== 0) return 0; if (typeof v === 'number') return v; return parseFloat(String(v).replace(/[^0-9.\-]/g,'')) || 0; };
-    const ticker = String(r[2]).toUpperCase().trim();
-    const strike = pn(r[5]);
-    const contracts = pn(r[6]) || 1;
-    const premRecv = pn(r[7]);
-    const premBuy = pn(r[8]);
-    const fees = pn(r[9]);
-    const netPremium = pn(r[10]);
-    const cur = String(r[14]||'USD').toUpperCase().trim();
-    const FX = 1.15;
-    const fxRate = cur === 'EUR' ? FX : 1;
-    const netUSD = cur === 'EUR' ? netPremium * fxRate : netPremium;
-    const cap = strike * contracts * 100;
-    const capUSD = cur === 'EUR' ? cap * fxRate : cap;
-    out.push({
-      open: String(r[0]||'').slice(0,10),
-      close: String(r[1]||'').slice(0,10),
-      ticker, type: String(r[3]||'CSP').toUpperCase().trim(),
-      expiry: String(r[4]||'').slice(0,10),
-      strike, contracts, premRecv, premBuy, fees, netPremium,
-      netPremiumUSD: netUSD,
-      capitalAtRisk: cap, capitalAtRiskUSD: capUSD,
-      status: String(r[11]||'Open').trim(),
-      breakeven: pn(r[12]),
-      account: String(r[13]||'').trim(),
-      currency: cur, fxRate,
-      assignedShares: 0, shareCostBasis: 0,
-      notes: String(r[15]||'').trim()
-    });
-  }
-  return out;
-}
-
-// Copy the Apps Script source code to clipboard
-function copyGASScript() {
-  const script = `// Wheel Pro – Google Apps Script
-// Deploy als Web App: Uitvoeren als "Ik", Toegang "Iedereen"
-const SHEET_NAME = 'Trades';
-
-function doGet(e) {
-  const action = e && e.parameter && e.parameter.action;
-  if (action === 'read') return jsonResp(readTrades());
-  return jsonResp({status:'err', message:'Gebruik ?action=read'});
-}
-
-function doPost(e) {
-  try {
-    const raw = e.postData.contents;
-    const payload = JSON.parse(raw);
-    if (payload.action === 'write') return jsonResp(writeTrades(payload));
-    return jsonResp({status:'err', message:'Onbekende actie'});
-  } catch(err) {
-    return jsonResp({status:'err', message:err.message});
-  }
-}
-
-function readTrades() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) return {status:'err', message:'Sheet "Trades" niet gevonden'};
-  const rows = sheet.getDataRange().getValues();
-  return {status:'ok', rows};
-}
-
-function writeTrades(payload) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
-  sheet.clearContents();
-  const data = [payload.headers, ...payload.rows];
-  sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
-  const hdr = sheet.getRange(1, 1, 1, payload.headers.length);
-  hdr.setBackground('#0f9d58');
-  hdr.setFontColor('#ffffff');
-  hdr.setFontWeight('bold');
-  sheet.setFrozenRows(1);
-  return {status:'ok', written: payload.rows.length};
-}
-
-function jsonResp(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}`;  navigator.clipboard.writeText(script).then(() => {
-    showToast('✅ Apps Script code gekopieerd naar klembord', 'ok');
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = script;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('✅ Code gekopieerd', 'ok');
-  });
 }
 
 // ============================================================
