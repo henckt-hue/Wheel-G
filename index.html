@@ -1287,13 +1287,13 @@ async function pushToGoogleSheets() {
       t.account||'', t.currency||'USD', t.notes||''
     ]);
     const payload = { action: 'write', headers, rows };
-    // Use no-cors with text/plain to avoid CORS preflight
-    const resp = await fetch(gsCfg.url, {
+    // no-cors avoids preflight — response is opaque but write succeeds
+    await fetch(gsCfg.url, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     });
-    // no-cors returns opaque response — if no error thrown, assume success
     setSyncUI(gsConnected ? 'connected' : 'disconnected');
     showToast('✅ Trades opgeslagen in Google Sheets', 'ok');
   } catch(e) {
@@ -1310,13 +1310,15 @@ async function syncFromGoogleSheets() {
   }
   setSyncUI('syncing');
   try {
-    // GET requests work fine with CORS on Apps Script Web Apps
-    const resp = await fetch(gsCfg.url + '?action=read', { redirect: 'follow' });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
+    const resp = await fetch(gsCfg.url + '?action=read');
+    const text = await resp.text();
+    // GAS soms stuurt HTML redirect pagina — probeer JSON te parsen
+    let data;
+    try { data = JSON.parse(text); }
+    catch(e) { throw new Error('Ongeldig antwoord van Apps Script. Controleer of de deployment correct is (Toegang: Iedereen).'); }
     if (data.status !== 'ok') throw new Error(data.message || 'Onbekende fout');
     const imported = parseGSRows(data.rows);
-    if (imported.length === 0) throw new Error('Geen trades gevonden in sheet');
+    if (imported.length === 0) throw new Error('Geen trades gevonden — importeer eerst je Excel');
     trades = imported;
     saveLocal();
     renderAll();
@@ -1325,7 +1327,7 @@ async function syncFromGoogleSheets() {
   } catch(e) {
     console.error(e);
     setSyncUI(gsConnected ? 'connected' : 'disconnected');
-    showToast('❌ Google Sheets sync mislukt: ' + e.message, 'err');
+    showToast('❌ ' + e.message, 'err');
   }
 }
 
