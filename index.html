@@ -431,11 +431,20 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
       </div>
 
       <div class="form-group">
-        <label class="form-label">Google Sheets API Key *</label>
+        <label class="form-label">Google Sheets API Key * (voor lezen)</label>
         <input class="form-input token-input" id="gs-url" type="password"
           placeholder="AIzaSy…" autocomplete="off">
         <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;">
           🔒 Key wordt alleen lokaal opgeslagen in jouw browser
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Apps Script URL (voor schrijven)</label>
+        <input class="form-input token-input" id="gs-script-url" type="password"
+          placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;">
+          Gebruik je bestaande Apps Script deployment URL
         </div>
       </div>
 
@@ -1231,19 +1240,23 @@ function loadGSCfg() {
         setSyncUI('connected');
         updateGSStatusPill();
       }
+      if (gsCfg.scriptUrl) {
+        document.getElementById('gs-script-url').value = gsCfg.scriptUrl;
+      }
     }
   } catch(e) {}
 }
 
 function saveGSConfig() {
   const apiKey = document.getElementById('gs-url').value.trim();
+  const scriptUrl = document.getElementById('gs-script-url').value.trim();
   if (!apiKey) { showToast('Voer een API key in', 'err'); return; }
-  gsCfg = { apiKey };
+  gsCfg = { apiKey, scriptUrl };
   localStorage.setItem('wt_cfg_gs2', JSON.stringify(gsCfg));
   gsConnected = true;
   setSyncUI('connected');
   updateGSStatusPill();
-  showToast('✅ API key opgeslagen', 'ok');
+  showToast('✅ Instellingen opgeslagen', 'ok');
 }
 
 function disconnectGS() {
@@ -1268,9 +1281,9 @@ function updateGSStatusPill() {
   }
 }
 
-// Push trades to Google Sheets via direct API
+// Push trades to Google Sheets via Apps Script POST (no-cors)
 async function pushToGoogleSheets() {
-  if (!gsConnected || !gsCfg.apiKey) return;
+  if (!gsConnected || !gsCfg.scriptUrl) return;
   setSyncUI('syncing');
   try {
     const headers = ['Open','Close','Ticker','Type','Expiry','Strike','Contracts',
@@ -1282,22 +1295,13 @@ async function pushToGoogleSheets() {
       t.netPremium, t.status, t.breakeven||'',
       t.account||'', t.currency||'USD', t.notes||''
     ]);
-    const values = [headers, ...rows];
-    const range = `${GS_SHEET_NAME}!A1`;
-    // First clear the sheet
-    await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(GS_SHEET_NAME)}:clear?key=${gsCfg.apiKey}`, {
-      method: 'POST'
+    const payload = { action: 'write', headers, rows };
+    // no-cors — Apps Script ontvangt de data, antwoord is opaque maar write werkt
+    await fetch(gsCfg.scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(payload)
     });
-    // Then write new data
-    const resp = await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW&key=${gsCfg.apiKey}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ range, majorDimension: 'ROWS', values })
-    });
-    if (!resp.ok) {
-      const e = await resp.json();
-      throw new Error(e.error?.message || 'HTTP ' + resp.status);
-    }
     setSyncUI('connected');
     showToast('✅ ' + trades.length + ' trades opgeslagen in Google Sheets', 'ok');
   } catch(e) {
