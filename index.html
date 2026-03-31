@@ -1324,7 +1324,7 @@ async function syncFromGoogleSheets() {
     const base = `${GS_BASE}/${GS_SPREADSHEET_ID}`;
 
     // 1. Lees Trades tab
-    const tradesResp = await fetch(`${base}/values/${encodeURIComponent('Trades!A:P')}?key=${key}`);
+    const tradesResp = await fetch(`${base}/values/${encodeURIComponent('Trades!A:AD')}?key=${key}`);
     if (!tradesResp.ok) { const e = await tradesResp.json(); throw new Error(e.error?.message || 'HTTP ' + tradesResp.status); }
     const tradesData = await tradesResp.json();
     const rows = tradesData.values || [];
@@ -1390,41 +1390,55 @@ async function testAndSyncGS() {
 }
 
 
-// Parse rows from Google Sheets
+// Parse rows from Google Sheets — kolomindices gebaseerd op A_WHEEL_TRACKER.xlsx:
+// A=Open, B=Close, C=Ticker, D=Type, E=Expiry, F=DTE, G=Strike, H=Contracts,
+// I=PremRecv, J=PremBuy, K=TotRecv, L=TotPaid, M=Fees, N=NetPrem, O=Account,
+// P=Breakeven, Q=Status, R=AssignedShares, S=ShareCostBasis, T=CapRisk,
+// U=Yield%, V=AnnYield%, W=RealizedPL, X=Notes, Y=TickerIdx, Z=TickerKey,
+// AA=Currency(26), AB=FX(27), AC=NetPremUSD(28), AD=CapRiskUSD(29)
 function parseGSRows(rows) {
   if (!rows || rows.length < 2) return [];
   const out = [];
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
     if (!r[2] || String(r[2]).trim() === '') continue;
-    const pn = v => { if (!v && v !== 0) return 0; if (typeof v === 'number') return v; return parseFloat(String(v).replace(/[^0-9.\-]/g,'')) || 0; };
+    const pn = v => {
+      if (!v && v !== 0) return 0;
+      if (typeof v === 'number') return v;
+      return parseFloat(String(v).replace(/[^0-9.\-]/g,'')) || 0;
+    };
     const ticker = String(r[2]).toUpperCase().trim();
-    const strike = pn(r[5]);
-    const contracts = pn(r[6]) || 1;
-    const premRecv = pn(r[7]);
-    const premBuy = pn(r[8]);
-    const fees = pn(r[9]);
-    const netPremium = pn(r[10]);
-    const cur = String(r[14]||'USD').toUpperCase().trim();
+    const strike    = pn(r[6]);
+    const contracts = pn(r[7]) || 1;
+    const premRecv  = pn(r[8]);
+    const premBuy   = pn(r[9]);
+    const fees      = pn(r[12]);
+    const netPremium = pn(r[13]);
+    const account   = r[14] ? String(r[14]).trim() : '';
+    const breakeven = pn(r[15]);
+    const status    = r[16] ? String(r[16]).trim() : 'Open';
+    const assignedShares  = pn(r[17]);
+    const shareCostBasis  = pn(r[18]);
+    const capitalAtRisk   = pn(r[19]) || (strike * contracts * 100);
+    const notes     = r[23] ? String(r[23]).trim() : '';
+    const cur       = r[26] ? String(r[26]).toUpperCase().trim() : 'USD';
     const FX = 1.15;
     const fxRate = cur === 'EUR' ? FX : 1;
-    const netUSD = cur === 'EUR' ? netPremium * fxRate : netPremium;
-    const cap = strike * contracts * 100;
-    const capUSD = cur === 'EUR' ? cap * fxRate : cap;
+    const netPremiumUSD  = pn(r[28]) || (cur === 'EUR' ? netPremium * fxRate : netPremium);
+    const capitalAtRiskUSD = pn(r[29]) || (cur === 'EUR' ? capitalAtRisk * fxRate : capitalAtRisk);
+
     out.push({
-      open: String(r[0]||'').slice(0,10),
-      close: String(r[1]||'').slice(0,10),
-      ticker, type: String(r[3]||'CSP').toUpperCase().trim(),
+      open:   String(r[0]||'').slice(0,10),
+      close:  String(r[1]||'').slice(0,10),
+      ticker,
+      type:   r[3] ? String(r[3]).toUpperCase().trim() : 'CSP',
       expiry: String(r[4]||'').slice(0,10),
       strike, contracts, premRecv, premBuy, fees, netPremium,
-      netPremiumUSD: netUSD,
-      capitalAtRisk: cap, capitalAtRiskUSD: capUSD,
-      status: String(r[11]||'Open').trim(),
-      breakeven: pn(r[12]),
-      account: String(r[13]||'').trim(),
+      netPremiumUSD, capitalAtRisk, capitalAtRiskUSD,
+      status, breakeven, account,
       currency: cur, fxRate,
-      assignedShares: 0, shareCostBasis: 0,
-      notes: String(r[15]||'').trim()
+      assignedShares, shareCostBasis,
+      notes
     });
   }
   return out;
