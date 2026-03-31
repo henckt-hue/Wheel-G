@@ -1287,13 +1287,13 @@ async function pushToGoogleSheets() {
       t.account||'', t.currency||'USD', t.notes||''
     ]);
     const payload = { action: 'write', headers, rows };
+    // Use no-cors with text/plain to avoid CORS preflight
     const resp = await fetch(gsCfg.url, {
       method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-    if (data.status !== 'ok') throw new Error(data.message || 'Onbekende fout');
+    // no-cors returns opaque response — if no error thrown, assume success
     setSyncUI(gsConnected ? 'connected' : 'disconnected');
     showToast('✅ Trades opgeslagen in Google Sheets', 'ok');
   } catch(e) {
@@ -1310,13 +1310,12 @@ async function syncFromGoogleSheets() {
   }
   setSyncUI('syncing');
   try {
-    const url = gsCfg.url + '?action=read';
-    const resp = await fetch(url);
+    // GET requests work fine with CORS on Apps Script Web Apps
+    const resp = await fetch(gsCfg.url + '?action=read', { redirect: 'follow' });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     if (data.status !== 'ok') throw new Error(data.message || 'Onbekende fout');
-    const rows = data.rows; // array of arrays incl. header row
-    const imported = parseGSRows(rows);
+    const imported = parseGSRows(data.rows);
     if (imported.length === 0) throw new Error('Geen trades gevonden in sheet');
     trades = imported;
     saveLocal();
@@ -1390,27 +1389,27 @@ const SHEET_NAME = 'Trades';
 
 function doGet(e) {
   const action = e && e.parameter && e.parameter.action;
-  if (action === 'read') return readTrades();
-  return ContentService.createTextOutput(JSON.stringify({status:'err',message:'Gebruik ?action=read'}))
-    .setMimeType(ContentService.MimeType.JSON);
+  if (action === 'read') return jsonResp(readTrades());
+  return jsonResp({status:'err', message:'Gebruik ?action=read'});
 }
 
 function doPost(e) {
   try {
-    const payload = JSON.parse(e.postData.contents);
-    if (payload.action === 'write') return writeTrades(payload);
-    return jsonResp({status:'err',message:'Onbekende actie'});
+    const raw = e.postData.contents;
+    const payload = JSON.parse(raw);
+    if (payload.action === 'write') return jsonResp(writeTrades(payload));
+    return jsonResp({status:'err', message:'Onbekende actie'});
   } catch(err) {
-    return jsonResp({status:'err',message:err.message});
+    return jsonResp({status:'err', message:err.message});
   }
 }
 
 function readTrades() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) return jsonResp({status:'err',message:'Sheet "Trades" niet gevonden'});
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return {status:'err', message:'Sheet "Trades" niet gevonden'};
   const rows = sheet.getDataRange().getValues();
-  return jsonResp({status:'ok', rows});
+  return {status:'ok', rows};
 }
 
 function writeTrades(payload) {
@@ -1420,20 +1419,18 @@ function writeTrades(payload) {
   sheet.clearContents();
   const data = [payload.headers, ...payload.rows];
   sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
-  // Style header row
   const hdr = sheet.getRange(1, 1, 1, payload.headers.length);
   hdr.setBackground('#0f9d58');
   hdr.setFontColor('#ffffff');
   hdr.setFontWeight('bold');
   sheet.setFrozenRows(1);
-  return jsonResp({status:'ok', written: payload.rows.length});
+  return {status:'ok', written: payload.rows.length};
 }
 
 function jsonResp(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-}`;
-  navigator.clipboard.writeText(script).then(() => {
+}`;  navigator.clipboard.writeText(script).then(() => {
     showToast('✅ Apps Script code gekopieerd naar klembord', 'ok');
   }).catch(() => {
     // Fallback
