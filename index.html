@@ -1347,17 +1347,6 @@ async function testAndSyncGS() {
   updateGSStatusPill();
 }
 
-async function testAndSyncGS() {
-  const url = document.getElementById('gs-url').value.trim();
-  if (!url) { showToast('Voer eerst een URL in', 'err'); return; }
-  gsCfg = { url };
-  gsConnected = true;
-  await syncFromGoogleSheets();
-  if (gsConnected) {
-    localStorage.setItem('wt_cfg_gs', JSON.stringify(gsCfg));
-    updateGSStatusPill();
-  }
-}
 
 // ============================================================
 // INIT
