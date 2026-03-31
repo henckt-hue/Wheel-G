@@ -1352,6 +1352,46 @@ async function testAndSyncGS() {
 }
 
 
+// Parse rows from Google Sheets
+function parseGSRows(rows) {
+  if (!rows || rows.length < 2) return [];
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[2] || String(r[2]).trim() === '') continue;
+    const pn = v => { if (!v && v !== 0) return 0; if (typeof v === 'number') return v; return parseFloat(String(v).replace(/[^0-9.\-]/g,'')) || 0; };
+    const ticker = String(r[2]).toUpperCase().trim();
+    const strike = pn(r[5]);
+    const contracts = pn(r[6]) || 1;
+    const premRecv = pn(r[7]);
+    const premBuy = pn(r[8]);
+    const fees = pn(r[9]);
+    const netPremium = pn(r[10]);
+    const cur = String(r[14]||'USD').toUpperCase().trim();
+    const FX = 1.15;
+    const fxRate = cur === 'EUR' ? FX : 1;
+    const netUSD = cur === 'EUR' ? netPremium * fxRate : netPremium;
+    const cap = strike * contracts * 100;
+    const capUSD = cur === 'EUR' ? cap * fxRate : cap;
+    out.push({
+      open: String(r[0]||'').slice(0,10),
+      close: String(r[1]||'').slice(0,10),
+      ticker, type: String(r[3]||'CSP').toUpperCase().trim(),
+      expiry: String(r[4]||'').slice(0,10),
+      strike, contracts, premRecv, premBuy, fees, netPremium,
+      netPremiumUSD: netUSD,
+      capitalAtRisk: cap, capitalAtRiskUSD: capUSD,
+      status: String(r[11]||'Open').trim(),
+      breakeven: pn(r[12]),
+      account: String(r[13]||'').trim(),
+      currency: cur, fxRate,
+      assignedShares: 0, shareCostBasis: 0,
+      notes: String(r[15]||'').trim()
+    });
+  }
+  return out;
+}
+
 // ============================================================
 // INIT
 // ============================================================
