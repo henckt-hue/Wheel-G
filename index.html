@@ -733,16 +733,18 @@ function renderKPIs() {
   const open=openT(), closed=closedT();
   const totalNet = overviewTotals.totalNet !== undefined ? overviewTotals.totalNet : trades.reduce((a,t)=>a+(t.netPremiumUSD||t.netPremium),0);
   const openPrem = overviewTotals.openPrem !== undefined ? overviewTotals.openPrem : open.reduce((a,t)=>a+(t.netPremiumUSD||t.netPremium),0);
-  const realPL = closed.reduce((a,t)=>a+(t.netPremiumUSD!==undefined?t.netPremiumUSD:t.netPremium),0);
-  const capRisk = open.reduce((a,t)=>a+(t.capitalAtRiskUSD||t.capitalAtRisk||t.strike*t.contracts*100),0);
-  const wins=closed.filter(t=>t.netPremium>0).length;
-  const wr=closed.length?wins/closed.length*100:0;
+  const realPL   = overviewTotals.realizedPL !== undefined ? overviewTotals.realizedPL : closed.reduce((a,t)=>a+(t.netPremiumUSD!==undefined?t.netPremiumUSD:t.netPremium),0);
+  const capRisk  = overviewTotals.capRisk !== undefined ? overviewTotals.capRisk : open.reduce((a,t)=>a+(t.capitalAtRiskUSD||t.capitalAtRisk||t.strike*t.contracts*100),0);
+  // Winrate: alleen trades met duidelijke uitkomst (Closed, Expired, Called Away)
+  const wrTrades = trades.filter(t=>['Closed','Expired','Called Away'].includes(t.status));
+  const wins = wrTrades.filter(t=>t.netPremium>0).length;
+  const wr = wrTrades.length ? wins/wrTrades.length*100 : 0;
   document.getElementById('kpi-scroll').innerHTML = [
     {label:'Total Net Premium',val:fmt(totalNet),sub:trades.length+' trades',cls:totalNet>=0?'pos':'neg',ac:'var(--green)',action:'all'},
     {label:'Open Premium',val:fmt(openPrem),sub:open.length+' open',cls:'pos',ac:'var(--blue)',action:'open'},
     {label:'Gerealiseerd',val:fmt(realPL),sub:closed.length+' gesloten',cls:realPL>=0?'pos':'neg',ac:'var(--accent)',action:'closed'},
     {label:'Kap. at Risk',val:fmt(capRisk),sub:open.length+' posities',cls:'dim',ac:'var(--yellow)',action:'open'},
-    {label:'Win Rate',val:wr.toFixed(1)+'%',sub:wins+'/'+closed.length,cls:wr>=50?'pos':'neg',ac:'var(--purple)',action:'all'},
+    {label:'Win Rate',val:wr.toFixed(1)+'%',sub:wins+'/'+wrTrades.length,cls:wr>=50?'pos':'neg',ac:'var(--purple)',action:'all'},
   ].map(k=>`<div class="kpi-card" style="--accent-color:${k.ac};cursor:pointer" onclick="kpiClick('${k.action}')">
     <div class="kpi-label">${k.label} <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
     <div class="kpi-value ${k.cls}">${k.val}</div>
@@ -1318,17 +1320,53 @@ async function syncFromGoogleSheets() {
   }
   setSyncUI('syncing');
   try {
-    const range = `${GS_SHEET_NAME}!A:P`;
-    const resp = await fetch(`${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}?key=${gsCfg.apiKey}`);
-    if (!resp.ok) {
-      const e = await resp.json();
-      throw new Error(e.error?.message || 'HTTP ' + resp.status);
-    }
-    const data = await resp.json();
-    const rows = data.values || [];
-    if (rows.length < 2) throw new Error('Geen trades gevonden — importeer eerst je Excel');
+    const key = gsCfg.apiKey;
+    const base = `${GS_BASE}/${GS_SPREADSHEET_ID}`;
+
+    // 1. Lees Trades tab
+    const tradesResp = await fetch(`${base}/values/${encodeURIComponent('Trades!A:P')}?key=${key}`);
+    if (!tradesResp.ok) { const e = await tradesResp.json(); throw new Error(e.error?.message || 'HTTP ' + tradesResp.status); }
+    const tradesData = await tradesResp.json();
+    const rows = tradesData.values || [];
+    if (rows.length < 2) throw new Error('Geen trades gevonden in sheet');
     const imported = parseGSRows(rows);
-    if (imported.length === 0) throw new Error('Geen trades gevonden — importeer eerst je Excel');
+    if (imported.length === 0) throw new Error('Geen trades gevonden');
+
+    // 2. Lees Overview tab (B3=totalNet, B4=openPrem, B5=realizedPL, B6=capRisk)
+    overviewTotals = {};
+    try {
+      const ovResp = await fetch(`${base}/values/${encodeURIComponent('Overview!B3:B6')}?key=${key}`);
+      if (ovResp.ok) {
+        const ovData = await ovResp.json();
+        const ov = ovData.values || [];
+        const pn = v => v && v[0] ? parseFloat(String(v[0]).replace(/[^0-9.\-]/g,'')) || 0 : 0;
+        if (ov[0]) overviewTotals.totalNet   = pn(ov[0]);
+        if (ov[1]) overviewTotals.openPrem   = pn(ov[1]);
+        if (ov[2]) overviewTotals.realizedPL = pn(ov[2]);
+        if (ov[3]) overviewTotals.capRisk    = pn(ov[3]);
+      }
+    } catch(e) { console.log('Overview niet gelezen:', e); }
+
+    // 3. Lees per-ticker tabs (B7=aandelen, B8=breakeven)
+    perAandeel = {};
+    const tickerNames = [...new Set(imported.map(t => t.ticker))];
+    const NON_TICKER = new Set(['trades','overview','per aandeel','aandeel','lists','instellingen','settings','dashboard','data','screener','performance','wheel kandidaten 2026','weekly screener','wheel trade finder']);
+    for (const ticker of tickerNames) {
+      if (NON_TICKER.has(ticker.toLowerCase())) continue;
+      try {
+        const tResp = await fetch(`${base}/values/${encodeURIComponent(ticker + '!B7:B8')}?key=${key}`);
+        if (tResp.ok) {
+          const tData = await tResp.json();
+          const vals = tData.values || [];
+          const pn = v => v && v[0] ? parseFloat(String(v[0]).replace(/[^0-9.\-]/g,'')) || 0 : 0;
+          perAandeel[ticker] = {
+            shares:   vals[0] ? pn(vals[0]) : 0,
+            breakeven: vals[1] ? pn(vals[1]) : 0,
+          };
+        }
+      } catch(e) { console.log('Ticker tab niet gelezen:', ticker, e); }
+    }
+
     trades = imported;
     saveLocal();
     renderAll();
