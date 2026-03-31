@@ -1288,17 +1288,55 @@ async function pushToGoogleSheets() {
   if (!gsConnected || !gsCfg.scriptUrl) return;
   setSyncUI('syncing');
   try {
-    const headers = ['Open','Close','Ticker','Type','Expiry','Strike','Contracts',
-      'PremRecv','PremBuy','Fees','NetPremium','Status','Breakeven',
-      'Account','Currency','Notes'];
-    const rows = trades.map(t => [
-      t.open||'', t.close||'', t.ticker, t.type, t.expiry,
-      t.strike, t.contracts, t.premRecv, t.premBuy||0, t.fees,
-      t.netPremium, t.status, t.breakeven||'',
-      t.account||'', t.currency||'USD', t.notes||''
-    ]);
+    const headers = [
+      'Open','Close','Ticker','Type','Expiry','Days to Expiry','Strike','Contracts',
+      'Premium Received / share','Premium Paid (Buyback) / share',
+      'Total Premium Received','Total Premium Paid','Fees','Net Premium',
+      'Account','Breakeven','Status','Assigned Shares','Share Cost Basis',
+      'Capital at Risk','Yield %','Annualized Yield %','Realized Option P/L','Notes',
+      'TickerIndex','TickerKey','Currency','FX to USD','Net Premium USD',
+      'Capital at Risk USD','Realized Option P/L USD','Share Cost Basis USD'
+    ];
+    const rows = trades.map((t, i) => {
+      const row = i + 2; // row 2 is first data row
+      const cap = t.strike * t.contracts * 100;
+      const yld = cap ? t.netPremium / cap : 0;
+      return [
+        t.open||'',                          // A Open
+        t.close||'',                         // B Close
+        t.ticker,                            // C Ticker
+        t.type,                              // D Type
+        t.expiry||'',                        // E Expiry
+        t.expiry ? `=IF(E${row}="","",E${row}-TODAY())` : '', // F DTE
+        t.strike,                            // G Strike
+        t.contracts,                         // H Contracts
+        t.premRecv,                          // I Prem Recv
+        t.premBuy||0,                        // J Prem Buy
+        t.premRecv * t.contracts * 100,      // K Total Recv
+        (t.premBuy||0) * t.contracts * 100,  // L Total Paid
+        t.fees,                              // M Fees
+        t.netPremium,                        // N Net Premium
+        t.account||'',                       // O Account
+        t.breakeven||'',                     // P Breakeven
+        t.status,                            // Q Status
+        t.assignedShares||'',               // R Assigned Shares
+        t.shareCostBasis||'',               // S Share Cost Basis
+        cap,                                 // T Capital at Risk
+        yld,                                 // U Yield %
+        '',                                  // V Ann Yield (complex, skip)
+        t.status !== 'Open' ? t.netPremium : '', // W Realized P/L
+        t.notes||'',                         // X Notes
+        '',                                  // Y TickerIndex
+        '',                                  // Z TickerKey
+        t.currency||'USD',                   // AA Currency
+        t.fxRate||1,                         // AB FX
+        t.netPremiumUSD||t.netPremium,       // AC Net USD
+        t.capitalAtRiskUSD||cap,             // AD Cap Risk USD
+        '',                                  // AE Realized USD
+        '',                                  // AF Share Cost USD
+      ];
+    });
     const payload = { action: 'write', headers, rows };
-    // no-cors — Apps Script ontvangt de data, antwoord is opaque maar write werkt
     await fetch(gsCfg.scriptUrl, {
       method: 'POST',
       mode: 'no-cors',
@@ -1403,9 +1441,12 @@ function parseGSRows(rows) {
   const pn = v => {
     if (v === null || v === undefined || v === '') return 0;
     if (typeof v === 'number') return v;
-    // Strip currency symbols, spaces, thousand separators
-    const s = String(v).replace(/[^0-9.\-,]/g,'').replace(',','.');
-    return parseFloat(s) || 0;
+    const s = String(v).trim();
+    // Bedragen tussen haakjes zijn negatief: ($133,80) → -133.80
+    const negative = s.startsWith('(') && s.endsWith(')');
+    const cleaned = s.replace(/[^0-9.,]/g,'').replace(',','.');
+    const result = parseFloat(cleaned) || 0;
+    return negative ? -result : result;
   };
 
   // Parse date: handles dd/mm/yyyy, yyyy-mm-dd, mm/dd/yyyy
