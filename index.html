@@ -1094,14 +1094,13 @@ async function saveTrade(){
   closeModal();
   renderAll();
   showToast(isNew?'Trade toegevoegd':'Trade bijgewerkt','ok');
-  // Sheets: nieuwe trade toevoegen via append, bestaande via sync na wijziging
+  // Sheets: nieuwe trade toevoegen via append, dan sync om formules te laden
   if(gsConnected) {
     if(isNew) {
       await appendTradeToSheets(trade);
-      showToast('✅ Trade toegevoegd aan Google Sheets', 'ok');
-    } else {
-      // Bij bewerken: sync vanuit Sheets na korte delay zodat gebruiker weet dat Sheets de master is
-      showToast('⚠️ Bewerk trades rechtstreeks in Google Sheets voor sync', 'warn');
+      setTimeout(async () => {
+        await syncFromGoogleSheets();
+      }, 2000);
     }
   }
 }
@@ -1320,9 +1319,9 @@ function updateGSStatusPill() {
   }
 }
 
-// Voeg één nieuwe trade toe aan Google Sheets via Sheets API (append)
+// Voeg één nieuwe trade toe aan Google Sheets via Apps Script (append)
 async function appendTradeToSheets(trade) {
-  if (!gsConnected || !gsCfg.apiKey) return;
+  if (!gsConnected || !gsCfg.scriptUrl) return;
   try {
     const cap = trade.strike * trade.contracts * 100;
     const yld = cap ? trade.netPremium / cap : 0;
@@ -1332,7 +1331,7 @@ async function appendTradeToSheets(trade) {
       trade.ticker,
       trade.type,
       trade.expiry||'',
-      '',                                        // F DTE (formule via sheet)
+      '',                                        // F DTE (formule via script)
       trade.strike,
       trade.contracts,
       trade.premRecv,
@@ -1359,19 +1358,11 @@ async function appendTradeToSheets(trade) {
       '', ''
     ];
 
-    const range = 'Trades!A:AF';
-    const resp = await fetch(
-      `${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${gsCfg.apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values: [row] })
-      }
-    );
-    if (!resp.ok) {
-      const e = await resp.json();
-      console.error('Sheets append error:', e);
-    }
+    await fetch(gsCfg.scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ action: 'append', row })
+    });
   } catch(e) {
     console.error('appendTradeToSheets error:', e);
   }
