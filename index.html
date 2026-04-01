@@ -1367,9 +1367,6 @@ async function syncFromGoogleSheets() {
     const tradesData = await tradesResp.json();
     const rows = tradesData.values || [];
     if (rows.length < 2) throw new Error('Geen trades gevonden in sheet');
-    // DEBUG: log eerste data rij om datum/getal formaat te zien
-    console.log('DEBUG row 1:', JSON.stringify(rows[1]));
-    console.log('DEBUG row 2:', JSON.stringify(rows[2]));
     const imported = parseGSRows(rows);
     if (imported.length === 0) throw new Error('Geen trades gevonden');
 
@@ -1474,21 +1471,19 @@ function parseGSRows(rows) {
     return negative ? -result : result;
   };
 
-  // Parse date: handles dd/mm/yyyy, yyyy-mm-dd, mm/dd/yyyy
+  // Parse date van Google Sheets: geeft M/D/YYYY terug (Amerikaans formaat)
   const fd = v => {
     if (!v) return '';
     const s = String(v).trim();
-    // yyyy-mm-dd
+    // yyyy-mm-dd (ISO)
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
-    // dd/mm/yyyy (Belgian/Dutch format from Google Sheets)
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)) {
-      const [d,m,y] = s.split('/');
-      return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-    }
-    // mm/dd/yyyy
-    if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(s)) {
-      const [d,m,y] = s.split('-');
-      return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    // M/D/YYYY of MM/DD/YYYY — Google Sheets Amerikaans formaat
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m) {
+      const month = m[1].padStart(2,'0');
+      const day   = m[2].padStart(2,'0');
+      const year  = m[3];
+      return `${year}-${month}-${day}`;
     }
     return s.slice(0,10);
   };
