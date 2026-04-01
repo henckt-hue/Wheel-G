@@ -1314,50 +1314,33 @@ function updateGSStatusPill() {
   }
 }
 
-// Voeg één nieuwe trade toe aan Google Sheets via Apps Script (append)
+// Voeg één nieuwe trade toe aan Google Sheets via Apps Script GET
 async function appendTradeToSheets(trade) {
   if (!gsConnected || !gsCfg.scriptUrl) return;
   try {
     const cap = trade.strike * trade.contracts * 100;
     const yld = cap ? trade.netPremium / cap : 0;
     const row = [
-      trade.open||'',
-      trade.close||'',
-      trade.ticker,
-      trade.type,
-      trade.expiry||'',
-      '',                                        // F DTE (formule via script)
-      trade.strike,
-      trade.contracts,
-      trade.premRecv,
-      trade.premBuy||0,
-      trade.premRecv * trade.contracts * 100,
-      (trade.premBuy||0) * trade.contracts * 100,
-      trade.fees,
-      trade.netPremium,
-      trade.account||'',
-      trade.breakeven||'',
-      trade.status,
-      trade.assignedShares||'',
-      trade.shareCostBasis||'',
-      cap,
-      yld,
-      '',
+      trade.open||'', trade.close||'', trade.ticker, trade.type, trade.expiry||'',
+      '', trade.strike, trade.contracts, trade.premRecv, trade.premBuy||0,
+      trade.premRecv * trade.contracts * 100, (trade.premBuy||0) * trade.contracts * 100,
+      trade.fees, trade.netPremium, trade.account||'', trade.breakeven||'',
+      trade.status, trade.assignedShares||'', trade.shareCostBasis||'',
+      cap, yld, '',
       trade.status !== 'Open' ? trade.netPremium : '',
-      trade.notes||'',
-      '', '',
-      trade.currency||'USD',
-      trade.fxRate||1,
-      trade.netPremiumUSD||trade.netPremium,
-      trade.capitalAtRiskUSD||cap,
-      '', ''
+      trade.notes||'', '', '', trade.currency||'USD', trade.fxRate||1,
+      trade.netPremiumUSD||trade.netPremium, trade.capitalAtRiskUSD||cap, '', ''
     ];
 
-    await fetch(gsCfg.scriptUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action: 'append', row })
-    });
+    const data = encodeURIComponent(JSON.stringify({row}));
+    const url = gsCfg.scriptUrl + '?action=append&data=' + data;
+    const resp = await fetch(url);
+    const text = await resp.text();
+    let result;
+    try { result = JSON.parse(text); } catch(e) { result = {status:'err'}; }
+    if (result.status !== 'ok') {
+      console.error('Append mislukt:', result);
+    }
   } catch(e) {
     console.error('appendTradeToSheets error:', e);
   }
