@@ -1314,10 +1314,10 @@ function updateGSStatusPill() {
   }
 }
 
-// Voeg één nieuwe trade toe aan Google Sheets via Apps Script GET
-async function appendTradeToSheets(trade) {
-  if (!gsConnected || !gsCfg.scriptUrl) return;
-  try {
+// Voeg één nieuwe trade toe aan Google Sheets via script tag (omzeilt CORS)
+function appendTradeToSheets(trade) {
+  if (!gsConnected || !gsCfg.scriptUrl) return Promise.resolve();
+  return new Promise((resolve) => {
     const cap = trade.strike * trade.contracts * 100;
     const yld = cap ? trade.netPremium / cap : 0;
     const row = [
@@ -1332,18 +1332,34 @@ async function appendTradeToSheets(trade) {
       trade.netPremiumUSD||trade.netPremium, trade.capitalAtRiskUSD||cap, '', ''
     ];
 
+    const cbName = '_gsAppend_' + Date.now();
+    const timer = setTimeout(() => {
+      delete window[cbName];
+      document.getElementById('_gs_append_script')?.remove();
+      resolve();
+    }, 10000);
+
+    window[cbName] = function(result) {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.getElementById('_gs_append_script')?.remove();
+      console.log('Append result:', result);
+      resolve(result);
+    };
+
     const data = encodeURIComponent(JSON.stringify({row}));
-    const url = gsCfg.scriptUrl + '?action=append&data=' + data;
-    const resp = await fetch(url);
-    const text = await resp.text();
-    let result;
-    try { result = JSON.parse(text); } catch(e) { result = {status:'err'}; }
-    if (result.status !== 'ok') {
-      console.error('Append mislukt:', result);
-    }
-  } catch(e) {
-    console.error('appendTradeToSheets error:', e);
-  }
+    const url = gsCfg.scriptUrl + '?action=append&data=' + data + '&callback=' + cbName;
+    const s = document.createElement('script');
+    s.id = '_gs_append_script';
+    s.src = url;
+    s.onerror = () => {
+      clearTimeout(timer);
+      delete window[cbName];
+      s.remove();
+      resolve();
+    };
+    document.body.appendChild(s);
+  });
 }
 
 // Update een bestaande trade in Google Sheets op basis van rijnummer
