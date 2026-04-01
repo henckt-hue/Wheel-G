@@ -1454,11 +1454,39 @@ async function syncFromGoogleSheets() {
       } catch(e) { console.log('Ticker tab niet gelezen:', ticker, e); }
     }
 
+    // 3. MERGE: vergelijk app trades met Sheets trades
+    // Unieke sleutel: ticker|open|type
+    const tradeKey = t => `${t.ticker}|${t.open}|${t.type}`;
+    const sheetsKeys = new Set(imported.map(tradeKey));
+    const localKeys  = new Set(trades.map(tradeKey));
+
+    // Trades die lokaal bestaan maar niet in Sheets → append naar Sheets
+    const toAppend = trades.filter(t => !sheetsKeys.has(tradeKey(t)));
+    for (const t of toAppend) {
+      await appendTradeToSheets(t);
+    }
+
+    // Wacht even als er appends waren zodat Sheets ze verwerkt
+    if (toAppend.length > 0) {
+      await new Promise(r => setTimeout(r, 1500));
+      // Herlaad Sheets na append
+      const r2 = await fetch(`${base}/values/${encodeURIComponent('Trades!A:AD')}?valueRenderOption=FORMATTED_VALUE&key=${key}`);
+      if (r2.ok) {
+        const d2 = await r2.json();
+        const r2rows = d2.values || [];
+        if (r2rows.length > 1) imported.push(...parseGSRows(r2rows).filter(t => !sheetsKeys.has(tradeKey(t))));
+      }
+    }
+
+    // Sheets is de master — gebruik Sheets data als basis, voeg lokale nieuwe trades toe
     trades = imported;
     saveLocal();
     renderAll();
     setSyncUI('connected');
-    showToast('✅ ' + imported.length + ' trades geladen uit Google Sheets', 'ok');
+    const msg = toAppend.length > 0
+      ? `✅ Gesynchroniseerd — ${toAppend.length} nieuwe trade(s) naar Sheets gestuurd`
+      : `✅ ${imported.length} trades geladen uit Google Sheets`;
+    showToast(msg, 'ok');
   } catch(e) {
     console.error(e);
     setSyncUI('connected');
