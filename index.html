@@ -1095,8 +1095,10 @@ async function saveTrade(){
   renderAll();
   showToast(isNew?'Trade toegevoegd':'Trade bijgewerkt','ok');
   // Sheets: nieuwe trade appenden via Apps Script
+  console.log('gsConnected:', gsConnected, 'isNew:', isNew, 'scriptUrl:', gsCfg.scriptUrl);
   if(gsConnected && isNew) {
-    appendTradeToSheets(trade); // fire and forget, geen sync achteraf
+    console.log('Calling appendTradeToSheets...');
+    appendTradeToSheets(trade);
   }
 }
 
