@@ -1095,9 +1095,7 @@ async function saveTrade(){
   renderAll();
   showToast(isNew?'Trade toegevoegd':'Trade bijgewerkt','ok');
   // Sheets: nieuwe trade appenden via Apps Script
-  console.log('gsConnected:', gsConnected, 'isNew:', isNew, 'scriptUrl:', gsCfg.scriptUrl);
   if(gsConnected && isNew) {
-    console.log('Calling appendTradeToSheets...');
     appendTradeToSheets(trade);
   }
 }
@@ -1481,12 +1479,13 @@ async function syncFromGoogleSheets() {
 
 async function testAndSyncGS() {
   const apiKey = document.getElementById('gs-url').value.trim();
+  const scriptUrl = document.getElementById('gs-script-url').value.trim();
   if (!apiKey) { showToast('Voer eerst een API key in', 'err'); return; }
-  gsCfg = { apiKey };
+  gsCfg = { apiKey, scriptUrl };
   gsConnected = true;
-  await syncFromGoogleSheets();
   localStorage.setItem('wt_cfg_gs2', JSON.stringify(gsCfg));
   updateGSStatusPill();
+  await syncFromGoogleSheets();
 }
 
 
