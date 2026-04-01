@@ -1073,13 +1073,19 @@ async function saveTrade(){
   const type=document.getElementById('f-type').value;
   const net=recv*contracts*100-buy*contracts*100-fees;
   const be=type==='CSP'?(strike-recv+buy+fees/(contracts*100)):(strike+recv-buy-fees/(contracts*100));
+  const cur=document.getElementById('f-currency').value;
+  const FX=1.15;
+  const fxRate=cur==='EUR'?FX:1;
+  const cap=strike*contracts*100;
   const trade={
     open:document.getElementById('f-open').value,
     close:document.getElementById('f-close').value,
     ticker,type,expiry,strike,contracts,premRecv:recv,premBuy:buy,fees,
-    netPremium:net,status:document.getElementById('f-status').value,
+    netPremium:net,netPremiumUSD:cur==='EUR'?net*fxRate:net,
+    capitalAtRisk:cap,capitalAtRiskUSD:cur==='EUR'?cap*fxRate:cap,
+    status:document.getElementById('f-status').value,
     breakeven:be,account:document.getElementById('f-account').value,
-    currency:document.getElementById('f-currency').value,
+    currency:cur,fxRate,
     notes:document.getElementById('f-notes').value
   };
   const isNew=editIdx===null;
@@ -1088,7 +1094,16 @@ async function saveTrade(){
   closeModal();
   renderAll();
   showToast(isNew?'Trade toegevoegd':'Trade bijgewerkt','ok');
-  if(gsConnected) await pushToGoogleSheets();
+  // Sheets: nieuwe trade toevoegen via append, bestaande via sync na wijziging
+  if(gsConnected) {
+    if(isNew) {
+      await appendTradeToSheets(trade);
+      showToast('✅ Trade toegevoegd aan Google Sheets', 'ok');
+    } else {
+      // Bij bewerken: sync vanuit Sheets na korte delay zodat gebruiker weet dat Sheets de master is
+      showToast('⚠️ Bewerk trades rechtstreeks in Google Sheets voor sync', 'warn');
+    }
+  }
 }
 
 function editTrade(idx){openTradeModal(idx);}
@@ -1097,8 +1112,7 @@ function delTrade(idx){
   trades.splice(idx,1);
   saveLocal();
   renderAll();
-  showToast('Trade verwijderd','ok');
-  if(gsConnected) pushToGoogleSheets();
+  showToast('Trade verwijderd — verwijder ook in Google Sheets','warn');
 }
 
 // ============================================================
@@ -1306,72 +1320,98 @@ function updateGSStatusPill() {
   }
 }
 
-// Push trades to Google Sheets via Apps Script POST (no-cors)
-async function pushToGoogleSheets() {
-  if (!gsConnected || !gsCfg.scriptUrl) return;
-  setSyncUI('syncing');
+// Voeg één nieuwe trade toe aan Google Sheets via Sheets API (append)
+async function appendTradeToSheets(trade) {
+  if (!gsConnected || !gsCfg.apiKey) return;
   try {
-    const headers = [
-      'Open','Close','Ticker','Type','Expiry','Days to Expiry','Strike','Contracts',
-      'Premium Received / share','Premium Paid (Buyback) / share',
-      'Total Premium Received','Total Premium Paid','Fees','Net Premium',
-      'Account','Breakeven','Status','Assigned Shares','Share Cost Basis',
-      'Capital at Risk','Yield %','Annualized Yield %','Realized Option P/L','Notes',
-      'TickerIndex','TickerKey','Currency','FX to USD','Net Premium USD',
-      'Capital at Risk USD','Realized Option P/L USD','Share Cost Basis USD'
+    const cap = trade.strike * trade.contracts * 100;
+    const yld = cap ? trade.netPremium / cap : 0;
+    const row = [
+      trade.open||'',
+      trade.close||'',
+      trade.ticker,
+      trade.type,
+      trade.expiry||'',
+      '',                                        // F DTE (formule via sheet)
+      trade.strike,
+      trade.contracts,
+      trade.premRecv,
+      trade.premBuy||0,
+      trade.premRecv * trade.contracts * 100,
+      (trade.premBuy||0) * trade.contracts * 100,
+      trade.fees,
+      trade.netPremium,
+      trade.account||'',
+      trade.breakeven||'',
+      trade.status,
+      trade.assignedShares||'',
+      trade.shareCostBasis||'',
+      cap,
+      yld,
+      '',
+      trade.status !== 'Open' ? trade.netPremium : '',
+      trade.notes||'',
+      '', '',
+      trade.currency||'USD',
+      trade.fxRate||1,
+      trade.netPremiumUSD||trade.netPremium,
+      trade.capitalAtRiskUSD||cap,
+      '', ''
     ];
-    const rows = trades.map((t, i) => {
-      const row = i + 2; // row 2 is first data row
-      const cap = t.strike * t.contracts * 100;
-      const yld = cap ? t.netPremium / cap : 0;
-      return [
-        t.open||'',                          // A Open
-        t.close||'',                         // B Close
-        t.ticker,                            // C Ticker
-        t.type,                              // D Type
-        t.expiry||'',                        // E Expiry
-        t.expiry ? `=IF(E${row}="","",E${row}-TODAY())` : '', // F DTE
-        t.strike,                            // G Strike
-        t.contracts,                         // H Contracts
-        t.premRecv,                          // I Prem Recv
-        t.premBuy||0,                        // J Prem Buy
-        t.premRecv * t.contracts * 100,      // K Total Recv
-        (t.premBuy||0) * t.contracts * 100,  // L Total Paid
-        t.fees,                              // M Fees
-        t.netPremium,                        // N Net Premium
-        t.account||'',                       // O Account
-        t.breakeven||'',                     // P Breakeven
-        t.status,                            // Q Status
-        t.assignedShares||'',               // R Assigned Shares
-        t.shareCostBasis||'',               // S Share Cost Basis
-        cap,                                 // T Capital at Risk
-        yld,                                 // U Yield %
-        '',                                  // V Ann Yield (complex, skip)
-        t.status !== 'Open' ? t.netPremium : '', // W Realized P/L
-        t.notes||'',                         // X Notes
-        '',                                  // Y TickerIndex
-        '',                                  // Z TickerKey
-        t.currency||'USD',                   // AA Currency
-        t.fxRate||1,                         // AB FX
-        t.netPremiumUSD||t.netPremium,       // AC Net USD
-        t.capitalAtRiskUSD||cap,             // AD Cap Risk USD
-        '',                                  // AE Realized USD
-        '',                                  // AF Share Cost USD
-      ];
-    });
-    const payload = { action: 'write', headers, rows };
-    await fetch(gsCfg.scriptUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify(payload)
-    });
-    setSyncUI('connected');
-    showToast('✅ ' + trades.length + ' trades opgeslagen in Google Sheets', 'ok');
+
+    const range = 'Trades!A:AF';
+    const resp = await fetch(
+      `${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${gsCfg.apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      }
+    );
+    if (!resp.ok) {
+      const e = await resp.json();
+      console.error('Sheets append error:', e);
+    }
   } catch(e) {
-    console.error(e);
-    setSyncUI('connected');
-    showToast('❌ Push mislukt: ' + e.message, 'err');
+    console.error('appendTradeToSheets error:', e);
   }
+}
+
+// Update een bestaande trade in Google Sheets op basis van rijnummer
+async function updateTradeInSheets(trade, sheetRow) {
+  if (!gsConnected || !gsCfg.apiKey || !sheetRow) return;
+  try {
+    const cap = trade.strike * trade.contracts * 100;
+    const yld = cap ? trade.netPremium / cap : 0;
+    const row = [
+      trade.open||'', trade.close||'', trade.ticker, trade.type, trade.expiry||'',
+      '', trade.strike, trade.contracts, trade.premRecv, trade.premBuy||0,
+      trade.premRecv * trade.contracts * 100, (trade.premBuy||0) * trade.contracts * 100,
+      trade.fees, trade.netPremium, trade.account||'', trade.breakeven||'',
+      trade.status, trade.assignedShares||'', trade.shareCostBasis||'',
+      cap, yld, '',
+      trade.status !== 'Open' ? trade.netPremium : '',
+      trade.notes||'', '', '', trade.currency||'USD', trade.fxRate||1,
+      trade.netPremiumUSD||trade.netPremium, trade.capitalAtRiskUSD||cap, '', ''
+    ];
+    const range = `Trades!A${sheetRow}:AF${sheetRow}`;
+    await fetch(
+      `${GS_BASE}/${GS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED&key=${gsCfg.apiKey}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      }
+    );
+  } catch(e) {
+    console.error('updateTradeInSheets error:', e);
+  }
+}
+
+// pushToGoogleSheets wordt niet meer gebruikt voor bulk-overschrijven
+// Laat leeg voor backwards compatibility
+async function pushToGoogleSheets() {
+  // Niet meer gebruiken — app gebruikt appendTradeToSheets / updateTradeInSheets
 }
 
 // Pull trades from Google Sheets via direct API
