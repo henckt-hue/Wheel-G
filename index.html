@@ -1367,6 +1367,9 @@ async function syncFromGoogleSheets() {
     const tradesData = await tradesResp.json();
     const rows = tradesData.values || [];
     if (rows.length < 2) throw new Error('Geen trades gevonden in sheet');
+    // DEBUG: log eerste data rij om datum/getal formaat te zien
+    console.log('DEBUG row 1:', JSON.stringify(rows[1]));
+    console.log('DEBUG row 2:', JSON.stringify(rows[2]));
     const imported = parseGSRows(rows);
     if (imported.length === 0) throw new Error('Geen trades gevonden');
 
@@ -1442,10 +1445,32 @@ function parseGSRows(rows) {
     if (v === null || v === undefined || v === '') return 0;
     if (typeof v === 'number') return v;
     const s = String(v).trim();
-    // Bedragen tussen haakjes zijn negatief: ($133,80) → -133.80
+    // Bedragen tussen haakjes zijn negatief: ($133.80) of ($133,80) → -133.80
     const negative = s.startsWith('(') && s.endsWith(')');
-    const cleaned = s.replace(/[^0-9.,]/g,'').replace(',','.');
-    const result = parseFloat(cleaned) || 0;
+    let clean = s.replace(/[()$€£\s]/g, '');
+    // Bepaal formaat: als er een punt EN komma is, is de laatste het decimaalteken
+    if (clean.includes('.') && clean.includes(',')) {
+      const lastDot = clean.lastIndexOf('.');
+      const lastComma = clean.lastIndexOf(',');
+      if (lastDot > lastComma) {
+        // 1,380.60 → punt is decimaal, komma is duizendtal
+        clean = clean.replace(/,/g, '');
+      } else {
+        // 1.380,60 → komma is decimaal, punt is duizendtal
+        clean = clean.replace(/\./g, '').replace(',', '.');
+      }
+    } else if (clean.includes(',')) {
+      // Alleen komma: kan decimaal (1,38) of duizendtal (1,380) zijn
+      const parts = clean.split(',');
+      if (parts[parts.length-1].length === 3 && parts.length > 1) {
+        // 1,380 → duizendtal
+        clean = clean.replace(/,/g, '');
+      } else {
+        // 1,38 → decimaal
+        clean = clean.replace(',', '.');
+      }
+    }
+    const result = parseFloat(clean) || 0;
     return negative ? -result : result;
   };
 
