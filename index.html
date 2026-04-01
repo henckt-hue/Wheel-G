@@ -1094,14 +1094,9 @@ async function saveTrade(){
   closeModal();
   renderAll();
   showToast(isNew?'Trade toegevoegd':'Trade bijgewerkt','ok');
-  // Sheets: nieuwe trade toevoegen via append, dan sync om formules te laden
-  if(gsConnected) {
-    if(isNew) {
-      await appendTradeToSheets(trade);
-      setTimeout(async () => {
-        await syncFromGoogleSheets();
-      }, 2000);
-    }
+  // Sheets: nieuwe trade appenden via Apps Script
+  if(gsConnected && isNew) {
+    appendTradeToSheets(trade); // fire and forget, geen sync achteraf
   }
 }
 
