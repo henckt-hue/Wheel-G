@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="nl">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0037)https://henckt-hue.github.io/Wheel-G/ -->
+<html lang="nl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,8 +21,8 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="./Wheel Pro_files/css2" rel="stylesheet">
+<script src="./Wheel Pro_files/xlsx.full.min.js.downloaden"></script>
 <style>
 :root {
   --bg:#0a0c10;--surface:#111318;--surface2:#181c24;--border:#252a35;
@@ -353,44 +353,995 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dash">
-      <div class="kpi-scroll" id="kpi-scroll"></div>
+      <div class="kpi-scroll" id="kpi-scroll"><div class="kpi-card" style="--accent-color:var(--green);cursor:pointer" onclick="kpiClick(&#39;all&#39;)">
+    <div class="kpi-label">Total Net Premium <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
+    <div class="kpi-value pos">$7.320,60</div>
+    <div class="kpi-sub">19 trades</div>
+  </div><div class="kpi-card" style="--accent-color:var(--blue);cursor:pointer" onclick="kpiClick(&#39;open&#39;)">
+    <div class="kpi-label">Open Premium <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
+    <div class="kpi-value pos">$5.903,60</div>
+    <div class="kpi-sub">6 open</div>
+  </div><div class="kpi-card" style="--accent-color:var(--accent);cursor:pointer" onclick="kpiClick(&#39;closed&#39;)">
+    <div class="kpi-label">Gerealiseerd <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
+    <div class="kpi-value pos">$1.417,00</div>
+    <div class="kpi-sub">13 gesloten</div>
+  </div><div class="kpi-card" style="--accent-color:var(--yellow);cursor:pointer" onclick="kpiClick(&#39;open&#39;)">
+    <div class="kpi-label">Kap. at Risk <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
+    <div class="kpi-value dim">$47.700,00</div>
+    <div class="kpi-sub">6 posities</div>
+  </div><div class="kpi-card" style="--accent-color:var(--purple);cursor:pointer" onclick="kpiClick(&#39;all&#39;)">
+    <div class="kpi-label">Win Rate <span style="font-size:0.6rem;opacity:0.5">↗</span></div>
+    <div class="kpi-value neg">41.7%</div>
+    <div class="kpi-sub">5/12</div>
+  </div></div>
       <div id="dash-warnings"></div>
-      <div class="sec-title">📊 P&L per Ticker</div>
-      <div class="bar-chart" id="ticker-chart" style="margin-bottom:1.1rem"></div>
-      <div class="sec-title">📈 Maandelijkse P&L</div>
-      <div class="bar-chart" id="month-chart" style="margin-bottom:1.1rem"></div>
+      <div class="sec-title">📊 P&amp;L per Ticker</div>
+      <div class="bar-chart" id="ticker-chart" style="margin-bottom:1.1rem">
+    <div class="bar-row">
+      <div class="bar-lbl">ASTS</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:100%"></div></div>
+      <div class="bar-val pos">$3.037,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">ASML</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:40.37537043134674%"></div></div>
+      <div class="bar-val pos">$1.226,20</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">RKLB</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:29.232795521896616%"></div></div>
+      <div class="bar-val pos">$887,80</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">RDW</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:28.251564043463954%"></div></div>
+      <div class="bar-val pos">$858,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">IREN</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:23.477115574580186%"></div></div>
+      <div class="bar-val pos">$713,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">APLD</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:12.835034573592367%"></div></div>
+      <div class="bar-val pos">$389,80</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">BN</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:6.875205795192627%"></div></div>
+      <div class="bar-val pos">$208,80</div>
+    </div></div>
+      <div class="sec-title">📈 Maandelijkse P&amp;L</div>
+      <div class="bar-chart" id="month-chart" style="margin-bottom:1.1rem">
+    <div class="bar-row">
+      <div class="bar-lbl">Jan</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:60.75246425100652%"></div></div>
+      <div class="bar-val pos">$875,20</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Feb</div>
+      <div class="bar-track"><div class="bar-fill bar-neg" style="width:62.390670553935855%"></div></div>
+      <div class="bar-val neg">-$898,80</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Mar</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:100%"></div></div>
+      <div class="bar-val pos">$1.440,60</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Apr</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">May</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Jun</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Jul</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Aug</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-lbl">Sep</div>
+      <div class="bar-track"><div class="bar-fill bar-pos" style="width:0%"></div></div>
+      <div class="bar-val dim">$0,00</div>
+    </div></div>
       <div class="sec-title">🟢 Open Posities</div>
-      <div id="open-cards"></div>
+      <div id="open-cards"><div class="trade-card" onclick="editTrade(9)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">RKLB <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$1.380,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$75</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-5d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$7.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$61,17</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">18.41%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-02-17 · T</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(9)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(9)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(10)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">RDW <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$858,00</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$9</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">23d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">5×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$7,26</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">19.07%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">302.6%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-12 · T</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(10)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(10)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(12)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">BN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$537,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$43</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">177d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.300,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$37,60</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">12.50%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">25.8%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(12)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(12)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(15)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">IREN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$1.012,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$43</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">23d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.300,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$32,85</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">23.55%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">373.7%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(15)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(15)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(17)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">APLD <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$888,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$31</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">57d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$3.100,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$22,09</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">28.66%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">183.6%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(17)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(17)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(18)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASML <span style="font-size:0.65rem;color:var(--text-dim)">EUR</span></span>
+        <span class="tc-net pos">€1.226,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$1200</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-5d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">0.2×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">€24.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">€1.138,50</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">5.11%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-18 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(18)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(18)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
     </div>
 
     <!-- TRADES -->
     <div class="page" id="page-trades">
       <div class="filter-row">
-        <button class="chip active" onclick="setFilter('',this)">Alle</button>
-        <button class="chip" onclick="setFilter('Open',this)">Open</button>
-        <button class="chip" onclick="setFilter('Closed',this)">Closed</button>
-        <button class="chip" onclick="setFilter('Assigned',this)">Assigned</button>
-        <button class="chip" onclick="setFilter('CSP',this)">CSP</button>
-        <button class="chip" onclick="setFilter('CC',this)">CC</button>
+        <button class="chip active" onclick="setFilter(&#39;&#39;,this)">Alle</button>
+        <button class="chip" onclick="setFilter(&#39;Open&#39;,this)">Open</button>
+        <button class="chip" onclick="setFilter(&#39;Closed&#39;,this)">Closed</button>
+        <button class="chip" onclick="setFilter(&#39;Assigned&#39;,this)">Assigned</button>
+        <button class="chip" onclick="setFilter(&#39;CSP&#39;,this)">CSP</button>
+        <button class="chip" onclick="setFilter(&#39;CC&#39;,this)">CC</button>
       </div>
-      <div id="trade-cards"></div>
+      <div id="trade-cards"><div class="trade-card" onclick="editTrade(6)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$243,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-cc">CC</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$108</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">2d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$10.800,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$112,88</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">2.25%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">411.0%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-25 → 2026-03-27 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(6)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(6)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(18)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASML <span style="font-size:0.65rem;color:var(--text-dim)">EUR</span></span>
+        <span class="tc-net pos">€1.226,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$1200</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-5d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">0.2×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">€24.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">€1.138,50</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">5.11%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-18 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(18)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(18)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(5)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$624,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-cc">CC</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$98</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-12d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$9.800,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$107,29</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">6.37%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-17 → 2026-03-24 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(5)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(5)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(4)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$133,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-cc">CC</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$95</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$9.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$98,90</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-1.41%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-13 → 2026-03-17 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(4)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(4)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(12)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">BN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$537,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$43</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">177d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.300,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$37,60</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">12.50%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">25.8%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(12)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(12)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(15)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">IREN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$1.012,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$43</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">23d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.300,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$32,85</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">23.55%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">373.7%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(15)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(15)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(17)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">APLD <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$888,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$31</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">57d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$3.100,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$22,09</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">28.66%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">183.6%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(17)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(17)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(3)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$488,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-cc">CC</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$100</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$10.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$106,53</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">4.88%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-02-23 → 2026-03-12 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(3)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(3)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(2)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$1.138,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$90</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$9.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$74,57</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">12.65%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-02-17 → 2026-03-04 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(2)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(2)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(9)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">RKLB <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$1.380,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$75</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-5d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$7.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$61,17</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">18.41%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-02-17 · T</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(9)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(9)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(14)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">IREN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$91,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$45</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$37,92</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-2.04%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-02-13 → 2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(14)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(14)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(7)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$855,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$95</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-61d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$9.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$90,49</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-9.01%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-30 → 2026-02-17 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(7)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(7)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(13)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">IREN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$207,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$48</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-61d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.800,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$44,07</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-4.33%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-30 → 2026-02-13 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(13)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(13)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(16)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">APLD <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$498,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$34</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$3.400,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$30,91</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-14.67%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-27 → 2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(16)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(16)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(1)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$657,60</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-assigned">Assigned</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$100</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-68d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$10.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$93,40</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">6.58%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-26 → 2026-02-13 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(1)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(1)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(11)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">BN <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$328,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$45</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-33d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$43,74</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-7.31%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-26 → 2026-03-09 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(11)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(11)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(8)">
+    <div class="trade-card-accent" style="background:var(--red)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">RKLB <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net neg">-$492,80</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$80</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-61d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$8.000,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$73,69</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v neg">-6.16%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-13 → 2026-02-17 · T</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(8)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(8)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(10)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">RDW <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$858,00</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-open">Open</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$9</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-ok">23d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">5×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$4.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$7,26</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">19.07%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">302.6%</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-12 · T</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(10)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(10)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="trade-card" onclick="editTrade(0)">
+    <div class="trade-card-accent" style="background:var(--green)"></div>
+    <div style="padding-left:0.5rem">
+      <div class="tc-top">
+        <span class="tc-ticker">ASTS <span style="font-size:0.65rem;color:var(--text-dim)">USD</span></span>
+        <span class="tc-net pos">$875,20</span>
+      </div>
+      <div class="tc-mid">
+        <div><div class="tc-stat-l">Type &amp; Status</div><div><span class="badge b-csp">CSP</span> <span class="badge b-closed">Closed</span></div></div>
+        <div><div class="tc-stat-l">Strike</div><div class="tc-stat-v dim">$95</div></div>
+        <div><div class="tc-stat-l">DTE</div>
+          <div><span class="dte dte-urgent">-61d</span></div>
+        </div>
+        <div><div class="tc-stat-l">Contracts</div><div class="tc-stat-v dim">1×</div></div>
+        <div><div class="tc-stat-l">Kap. at Risk</div><div class="tc-stat-v dim">$9.500,00</div></div>
+        <div><div class="tc-stat-l">Breakeven</div><div class="tc-stat-v dim">$82,70</div></div>
+        <div><div class="tc-stat-l">Yield</div><div class="tc-stat-v pos">9.21%</div></div>
+        <div><div class="tc-stat-l">Ann. Yield</div><div class="tc-stat-v dim">—</div></div>
+      </div>
+      <div class="tc-bot">
+        <span class="tc-meta">2026-01-06 → 2026-01-22 · TS</span>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editTrade(0)">✏️</button>
+          <button class="icon-btn del" onclick="delTrade(0)">🗑</button>
+        </div>
+      </div>
+    </div>
+  </div></div>
     </div>
 
     <!-- TICKERS -->
     <div class="page" id="page-tickers">
-      <div class="ticker-grid" id="ticker-grid"></div>
+      <div class="ticker-grid" id="ticker-grid"><div class="t-card t-pos" onclick="showTickerDetail(&#39;ASTS&#39;)">
+      <div class="t-name">ASTS <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$3.037,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v pos">$3.037,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">8</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;RKLB&#39;)">
+      <div class="t-name">RKLB <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$887,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v neg">-$492,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">$7.500,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">2</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;RDW&#39;)">
+      <div class="t-name">RDW <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$858,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v dim">$0,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">$4.500,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v"><span class="dte dte-ok">23d</span></div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">1</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;BN&#39;)">
+      <div class="t-name">BN <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$208,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v neg">-$328,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">$4.300,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v"><span class="dte dte-ok">177d</span></div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">2</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;IREN&#39;)">
+      <div class="t-name">IREN <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$713,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v neg">-$299,60</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">$4.300,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v"><span class="dte dte-ok">23d</span></div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">3</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;APLD&#39;)">
+      <div class="t-name">APLD <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">USD</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">$389,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v neg">-$498,80</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">$3.100,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v"><span class="dte dte-ok">57d</span></div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">2</div></div>
+    </div><div class="t-card t-pos" onclick="showTickerDetail(&#39;ASML&#39;)">
+      <div class="t-name">ASML <span style="font-size:0.65rem;color:var(--text-dim);font-weight:400">EUR</span></div>
+      <div class="t-open-pill">1 OPEN</div>
+      <div class="t-stat"><div class="t-stat-l">Net Premium</div><div class="t-stat-v pos">€1.226,20</div></div>
+      <div class="t-stat"><div class="t-stat-l">Gerealiseerd</div><div class="t-stat-v dim">€0,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Open Kap.</div><div class="t-stat-v dim">€24.000,00</div></div>
+      <div class="t-stat"><div class="t-stat-l">Aandelen</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Dichtstbij DTE</div><div class="t-stat-v">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Break-even</div><div class="t-stat-v dim">—</div></div>
+      <div class="t-stat"><div class="t-stat-l">Trades</div><div class="t-stat-v dim">1</div></div>
+    </div></div>
     </div>
 
     <!-- PERFORMANCE -->
     <div class="page" id="page-perf">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;padding:0 0.1rem;">
         <button onclick="changeYear(-1)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
-        <div style="flex:1;text-align:center;font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent)" id="perf-year-label">2026</div>
+        <div style="flex:1;text-align:center;font-family:&#39;Space Mono&#39;,monospace;font-size:1.1rem;font-weight:700;color:var(--accent)" id="perf-year-label">2026</div>
         <button onclick="changeYear(1)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
       </div>
-      <div class="kpi-scroll" id="perf-kpis"></div>
+      <div class="kpi-scroll" id="perf-kpis"><div class="kpi-card" style="--accent-color:var(--green)">
+    <div class="kpi-label">Jaar 2026</div><div class="kpi-value pos">$1.417,00</div>
+  </div><div class="kpi-card" style="--accent-color:var(--accent)">
+    <div class="kpi-label">Win Rate</div><div class="kpi-value neg">46.2%</div>
+  </div><div class="kpi-card" style="--accent-color:var(--blue)">
+    <div class="kpi-label">Beste Maand</div><div class="kpi-value pos">$1.440,60</div>
+  </div><div class="kpi-card" style="--accent-color:var(--yellow)">
+    <div class="kpi-label">Gem./Trade</div><div class="kpi-value pos">$109,00</div>
+  </div><div class="kpi-card" style="--accent-color:var(--purple)">
+    <div class="kpi-label">All-time</div><div class="kpi-value pos">$1.417,00</div>
+  </div></div>
       <div class="sec-title" id="perf-month-title">Maand per Maand 2026</div>
-      <div id="perf-rows"></div>
+      <div id="perf-rows"><div class="perf-row">
+      <span class="perf-month">Jan</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $875,20</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val pos">$875,20</span>
+        <span style="font-size:0.8rem">✅</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Feb</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP -$898,80</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val neg">-$898,80</span>
+        <span style="font-size:0.8rem">❌</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Mar</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $218,80</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $1.221,80</span>
+        <span class="perf-val pos">$1.440,60</span>
+        <span style="font-size:0.8rem">✅</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Apr</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">May</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Jun</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Jul</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Aug</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Sep</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Oct</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Nov</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div><div class="perf-row">
+      <span class="perf-month">Dec</span>
+      <div class="perf-vals">
+        <span class="perf-val dim" style="font-size:0.62rem">CSP $0,00</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC $0,00</span>
+        <span class="perf-val dim">$0,00</span>
+        <span style="font-size:0.8rem">—</span>
+      </div>
+    </div></div>
     </div>
 
     <!-- SCREENER -->
@@ -407,7 +1358,95 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
         </div>
       </div>
       <div class="sec-title">Top Kandidaten 2026</div>
-      <div id="screen-cards"></div>
+      <div id="screen-cards">
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">AMD</span>
+        <span class="screen-fit" style="color:var(--green)">Sterk</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>54.3%</strong></span>
+        <span class="screen-stat">Vol <strong>542K</strong></span>
+      </div>
+      <div class="screen-note">Uitstekende wheel-kandidaat</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">PLTR</span>
+        <span class="screen-fit" style="color:var(--green)">Sterk</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>51.6%</strong></span>
+        <span class="screen-stat">Vol <strong>675K</strong></span>
+      </div>
+      <div class="screen-note">Veel premie, wel beweeglijk</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">SOFI</span>
+        <span class="screen-fit" style="color:var(--green)">Sterk</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>66.1%</strong></span>
+        <span class="screen-stat">Vol <strong>373K</strong></span>
+      </div>
+      <div class="screen-note">Hoge IV en actieve keten</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">NVDA</span>
+        <span class="screen-fit" style="color:var(--green)">Sterk</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>42.3%</strong></span>
+        <span class="screen-stat">Vol <strong>2.24M</strong></span>
+      </div>
+      <div class="screen-note">Grote liquiditeit, sterk voor wheel</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">TSLA</span>
+        <span class="screen-fit" style="color:var(--red)">Agressief</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>45.9%</strong></span>
+        <span class="screen-stat">Vol <strong>3.26M</strong></span>
+      </div>
+      <div class="screen-note">Beste premie, hoog assignment-risico</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">AMZN</span>
+        <span class="screen-fit" style="color:var(--blue)">Core</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>32.6%</strong></span>
+        <span class="screen-stat">Vol <strong>555K</strong></span>
+      </div>
+      <div class="screen-note">Goede liquiditeit, redelijke premie</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">AAPL</span>
+        <span class="screen-fit" style="color:var(--blue)">Core</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>29.8%</strong></span>
+        <span class="screen-stat">Vol <strong>800K</strong></span>
+      </div>
+      <div class="screen-note">Sterke liquiditeit, lagere premie</div>
+    </div>
+    <div class="screen-card">
+      <div class="screen-top">
+        <span class="screen-ticker">MSFT</span>
+        <span class="screen-fit" style="color:var(--blue)">Core</span>
+      </div>
+      <div class="screen-stats">
+        <span class="screen-stat">IV <strong>28.7%</strong></span>
+        <span class="screen-stat">Vol <strong>853K</strong></span>
+      </div>
+      <div class="screen-note">Defensiever dan meeste wheel-namen</div>
+    </div></div>
     </div>
 
     <!-- SETTINGS -->
@@ -446,8 +1485,7 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
 
       <div class="form-group">
         <label class="form-label">Google Sheets API Key * (voor lezen)</label>
-        <input class="form-input token-input" id="gs-url" type="password"
-          placeholder="AIzaSy…" autocomplete="off">
+        <input class="form-input token-input" id="gs-url" type="password" placeholder="AIzaSy…" autocomplete="off">
         <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;">
           🔒 Key wordt alleen lokaal opgeslagen in jouw browser
         </div>
@@ -455,8 +1493,7 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
 
       <div class="form-group">
         <label class="form-label">Apps Script URL (voor schrijven)</label>
-        <input class="form-input token-input" id="gs-script-url" type="password"
-          placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+        <input class="form-input token-input" id="gs-script-url" type="password" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
         <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;">
           Gebruik je bestaande Apps Script deployment URL
         </div>
@@ -466,7 +1503,7 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
         <button class="btn btn-primary" onclick="saveGSConfig()">💾 Opslaan</button>
       </div>
       <div class="btn-row" style="margin-bottom:0.65rem">
-        <button class="btn btn-gsheets" onclick="testAndSyncGS()">🔗 Testen & Synchroniseren</button>
+        <button class="btn btn-gsheets" onclick="testAndSyncGS()">🔗 Testen &amp; Synchroniseren</button>
       </div>
       <div class="btn-row" style="margin-bottom:1.5rem">
         <button class="btn btn-outline" onclick="disconnectGS()">Ontkoppelen</button>
@@ -483,7 +1520,7 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
         </div>
       </div>
       <div class="btn-row" style="margin-bottom:0.4rem">
-        <button class="btn btn-primary" onclick="document.getElementById('xlsx-input').click()">📂 Kies Excel Bestand</button>
+        <button class="btn btn-primary" onclick="document.getElementById(&#39;xlsx-input&#39;).click()">📂 Kies Excel Bestand</button>
       </div>
       <input type="file" id="xlsx-input" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
       <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:1.5rem;text-align:center;">
@@ -493,7 +1530,7 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
       <div class="sec-title">📱 Installeer als App</div>
 
       <!-- Desktop install knop (PWA) -->
-      <div class="btn-row" style="margin-bottom:0.65rem" id="pwa-install-row" style="display:none">
+      <div class="btn-row" style="margin-bottom: 0.65rem; display: flex;" id="pwa-install-row">
         <button class="btn btn-primary" id="pwa-install-btn" onclick="installPWA()">💻 Installeer als Desktop App</button>
       </div>
 
@@ -513,22 +1550,22 @@ html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:v
   </div><!-- end scroll-area -->
 
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="showPage('dash',this)">
+    <button class="nav-item active" onclick="showPage(&#39;dash&#39;,this)">
       <span class="icon">📊</span><span>Board</span><div class="nav-pip"></div>
     </button>
-    <button class="nav-item" onclick="showPage('trades',this)">
+    <button class="nav-item" onclick="showPage(&#39;trades&#39;,this)">
       <span class="icon">📋</span><span>Trades</span><div class="nav-pip"></div>
     </button>
-    <button class="nav-item" onclick="showPage('tickers',this)">
+    <button class="nav-item" onclick="showPage(&#39;tickers&#39;,this)">
       <span class="icon">🎯</span><span>Tickers</span><div class="nav-pip"></div>
     </button>
-    <button class="nav-item" onclick="showPage('perf',this)">
+    <button class="nav-item" onclick="showPage(&#39;perf&#39;,this)">
       <span class="icon">📈</span><span>Perf.</span><div class="nav-pip"></div>
     </button>
-    <button class="nav-item" onclick="showPage('screen',this)">
+    <button class="nav-item" onclick="showPage(&#39;screen&#39;,this)">
       <span class="icon">🔍</span><span>Screen</span><div class="nav-pip"></div>
     </button>
-    <button class="nav-item" onclick="showPage('settings',this)">
+    <button class="nav-item" onclick="showPage(&#39;settings&#39;,this)">
       <span class="icon">⚙️</span><span>Instellingen</span><div class="nav-pip"></div>
     </button>
   </nav>
@@ -674,6 +1711,7 @@ async function handleSyncBtn() {
 let trades = [];
 let overviewTotals = {};
 let perAandeel = {};
+let perfData = {};
 let selectedYear = new Date().getFullYear();
 
 function changeYear(dir) {
@@ -797,8 +1835,15 @@ function renderTickerChart() {
 
 function renderMonthChart() {
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'];
-  const md=Array(12).fill(0);
-  closedT().forEach(t=>{if(t.close){const m=new Date(t.close).getMonth();md[m]+=(t.netPremiumUSD!==undefined?t.netPremiumUSD:t.netPremium);}});
+  let md;
+  if (perfData.months && perfData.months.length > 0) {
+    // Gebruik Performance tab data uit Google Sheets
+    md = perfData.months.map(m => m.income);
+  } else {
+    // Fallback: bereken zelf
+    md = Array(12).fill(0);
+    closedT().forEach(t=>{if(t.close){const m=new Date(t.close).getMonth();md[m]+=(t.netPremiumUSD!==undefined?t.netPremiumUSD:t.netPremium);}});
+  }
   const max=Math.max(...md.map(Math.abs))||1;
   document.getElementById('month-chart').innerHTML=months.map((m,i)=>`
     <div class="bar-row">
@@ -927,40 +1972,61 @@ function renderTickerGrid() {
 function renderPerf() {
   const yr = selectedYear;
   const allClosed = closedT();
-  const yClosed = allClosed.filter(t => t.close && new Date(t.close).getFullYear() === yr);
   const val = t => t.netPremiumUSD !== undefined ? t.netPremiumUSD : t.netPremium;
-  const yrTotal = yClosed.reduce((a,t)=>a+val(t), 0);
   const allTotal = allClosed.reduce((a,t)=>a+val(t), 0);
-  const wins = yClosed.filter(t=>t.netPremium>0).length;
-  const wr = yClosed.length ? wins/yClosed.length : 0;
-  const avg = yClosed.length ? yrTotal/yClosed.length : 0;
-  const md = Array(12).fill(0).map(()=>({csp:0,cc:0}));
-  yClosed.forEach(t=>{ if(t.close){ const m=new Date(t.close).getMonth(); const v=val(t); if(t.type==='CSP') md[m].csp+=v; else md[m].cc+=v; }});
-  const bestMonth = Math.max(...md.map(m=>m.csp+m.cc), 0);
 
   document.getElementById('perf-year-label').textContent = yr;
   document.getElementById('perf-month-title').textContent = 'Maand per Maand ' + yr;
 
+  // Gebruik Performance tab data als beschikbaar
+  const hasPerf = perfData.months && perfData.months.length > 0 && (perfData.year === yr || !perfData.year);
+
+  let yrTotal, bestMonth, md;
+  if (hasPerf) {
+    yrTotal = perfData.totalIncome || 0;
+    md = perfData.months;
+    bestMonth = Math.max(...md.map(m => m.income), 0);
+  } else {
+    // Fallback: bereken zelf
+    const yClosed = allClosed.filter(t => t.close && new Date(t.close).getFullYear() === yr);
+    yrTotal = yClosed.reduce((a,t)=>a+val(t), 0);
+    md = Array(12).fill(0).map((_,i) => {
+      const csp = yClosed.filter(t=>t.close&&new Date(t.close).getMonth()===i&&t.type==='CSP').reduce((a,t)=>a+val(t),0);
+      const cc  = yClosed.filter(t=>t.close&&new Date(t.close).getMonth()===i&&t.type==='CC').reduce((a,t)=>a+val(t),0);
+      return {name:'',income:csp+cc,csp,cc};
+    });
+    bestMonth = Math.max(...md.map(m => m.income), 0);
+  }
+
+  // Winrate altijd berekend uit trades
+  const wrTrades = trades.filter(t=>['Closed','Expired','Called Away'].includes(t.status));
+  const wins = wrTrades.filter(t=>t.netPremium>0).length;
+  const wr = wrTrades.length ? wins/wrTrades.length : 0;
+  const avg = yrTotal && md.filter(m=>m.income!==0).length ? yrTotal/md.filter(m=>m.income!==0).length : 0;
+
   document.getElementById('perf-kpis').innerHTML = [
-    {label:'Jaar '+yr,val:fmt(yrTotal),cls:yrTotal>=0?'pos':'neg',ac:'var(--green)'},
-    {label:'Win Rate',val:(wr*100).toFixed(1)+'%',cls:wr>=0.5?'pos':'neg',ac:'var(--accent)'},
-    {label:'Beste Maand',val:bestMonth>0?fmt(bestMonth):'—',cls:'pos',ac:'var(--blue)'},
-    {label:'Gem./Trade',val:yClosed.length?fmt(avg):'—',cls:cc(avg),ac:'var(--yellow)'},
-    {label:'All-time',val:fmt(allTotal),cls:allTotal>=0?'pos':'neg',ac:'var(--purple)'},
+    {label:'Jaar '+yr, val:fmt(yrTotal), cls:yrTotal>=0?'pos':'neg', ac:'var(--green)'},
+    {label:'Win Rate',  val:(wr*100).toFixed(1)+'%', cls:wr>=0.5?'pos':'neg', ac:'var(--accent)'},
+    {label:'Beste Maand', val:bestMonth>0?fmt(bestMonth):'—', cls:'pos', ac:'var(--blue)'},
+    {label:'Gem./Maand', val:fmt(avg), cls:cc(avg), ac:'var(--yellow)'},
+    {label:'All-time', val:fmt(allTotal), cls:allTotal>=0?'pos':'neg', ac:'var(--purple)'},
   ].map(k=>`<div class="kpi-card" style="--accent-color:${k.ac}">
     <div class="kpi-label">${k.label}</div><div class="kpi-value ${k.cls}">${k.val}</div>
   </div>`).join('');
 
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('perf-rows').innerHTML = months.map((m,i)=>{
-    const tot = md[i].csp + md[i].cc;
+  const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('perf-rows').innerHTML = monthNames.map((name,i)=>{
+    const m = hasPerf ? md[i] : md[i];
+    const income = hasPerf ? m.income : m.income;
+    const csp    = hasPerf ? m.csp    : m.csp;
+    const cc2    = hasPerf ? m.cc     : m.cc;
     return `<div class="perf-row">
-      <span class="perf-month">${m}</span>
+      <span class="perf-month">${name}</span>
       <div class="perf-vals">
-        <span class="perf-val dim" style="font-size:0.62rem">CSP ${fmt(md[i].csp)}</span>
-        <span class="perf-val dim" style="font-size:0.62rem">CC ${fmt(md[i].cc)}</span>
-        <span class="perf-val ${cc(tot)}">${fmt(tot)}</span>
-        <span style="font-size:0.8rem">${tot>0?'✅':tot<0?'❌':'—'}</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CSP ${fmt(csp)}</span>
+        <span class="perf-val dim" style="font-size:0.62rem">CC ${fmt(cc2)}</span>
+        <span class="perf-val ${cc(income)}">${fmt(income)}</span>
+        <span style="font-size:0.8rem">${income>0?'✅':income<0?'❌':'—'}</span>
       </div>
     </div>`;
   }).join('');
@@ -1453,7 +2519,35 @@ async function syncFromGoogleSheets() {
       } catch(e) { console.log('Ticker tab niet gelezen:', ticker, e); }
     }
 
-    // 3. MERGE: vergelijk app trades met Sheets trades
+    // 4. Lees Performance tab
+    perfData = {};
+    try {
+      const perfResp = await fetch(`${base}/values/${encodeURIComponent('Performance!A2:I17')}?valueRenderOption=UNFORMATTED_VALUE&key=${key}`);
+      if (perfResp.ok) {
+        const perfJson = await perfResp.json();
+        const perfRows = perfJson.values || [];
+        // Row 0: Jaar, B2 = gekozen jaar
+        // Row 1: leeg
+        // Row 2: headers
+        // Rows 3-14: Jan-Dec met Income(D), CSP(E), CC(F)
+        // Jaartotaal staat in kolom H/I: I3=Totaal income, I4=Totaal CSP, I5=Totaal CC, I6=Maanden
+        const pn = v => typeof v === 'number' ? v : (parseFloat(String(v||'').replace(/[^0-9.\-]/g,'')) || 0);
+        perfData.year = pn(perfRows[0] && perfRows[0][1]);
+        perfData.totalIncome = pn(perfRows[1] && perfRows[1][8]);
+        perfData.totalCSP    = pn(perfRows[2] && perfRows[2][8]);
+        perfData.totalCC     = pn(perfRows[3] && perfRows[3][8]);
+        perfData.months = [];
+        for (let i = 3; i <= 14; i++) {
+          const r = perfRows[i] || [];
+          perfData.months.push({
+            name:   r[0] || '',
+            income: pn(r[3]),
+            csp:    pn(r[4]),
+            cc:     pn(r[5]),
+          });
+        }
+      }
+    } catch(e) { console.log('Performance niet gelezen:', e); }
     // Unieke sleutel: ticker|open|type
     const tradeKey = t => `${t.ticker}|${t.open}|${t.type}`;
     const sheetsKeys = new Set(imported.map(tradeKey));
@@ -1648,5 +2742,6 @@ loadGSCfg();
 if(!loadLocal())seedData();
 renderAll();
 </script>
-</body>
-</html>
+
+
+</body></html>
